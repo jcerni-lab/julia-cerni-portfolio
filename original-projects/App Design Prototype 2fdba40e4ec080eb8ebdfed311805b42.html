@@ -1,0 +1,865 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>App Design Prototype  </title><meta name="data-notion-page-icon" content="🎲"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%8E%B2%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"><style>
+html { scroll-behavior:smooth; background:#f5f2eb }
+body { margin:0; padding:0 0 48px; background:#f5f2eb; color:#25251f; font-family:'DM Sans',Arial,sans-serif; -webkit-font-smoothing:antialiased }
+article.page { width:min(880px,100%); margin:0 auto; padding:0 34px 48px; box-shadow:none }
+article.page header { padding:0 0 28px; border-bottom:1px solid #d9d5ca }
+article.page .page-cover-image { position:relative; width:calc(100% + 68px); height:clamp(210px,34vw,340px); max-width:none; margin:0 -34px 28px; object-fit:cover; border-radius:0 }
+article.page .page-header-icon { display:none }
+article.page .page-title { margin:0; font:500 clamp(34px,6vw,56px)/1.05 'Playfair Display',Georgia,serif; letter-spacing:-.045em; color:#25251f }
+article.page .page-body { padding-top:18px; font-size:15px; line-height:1.8; color:#4f5048 }
+article.page h1, article.page h2, article.page h3 { margin:34px 0 12px; padding:0; background:none!important; color:#25251f!important; font:500 clamp(22px,3vw,30px)/1.16 'Playfair Display',Georgia,serif; letter-spacing:-.025em }
+article.page h1:first-child, article.page h2:first-child, article.page h3:first-child { margin-top:12px }
+article.page p, article.page li { font:400 15px/1.8 'DM Sans',Arial,sans-serif; color:#55564e }
+article.page hr { margin:28px 0; border:0; border-top:1px solid #d9d5ca }
+article.page figure.image { margin:22px 0 28px; text-align:center }
+article.page figure.image img { display:block; width:auto!important; max-width:100%; max-height:none; height:auto; margin:0 auto; border-radius:5px }
+article.page .column-list { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap }
+article.page .column { min-width:min(260px,100%); flex:1 1 280px }
+article.page details { margin:15px 0; padding:16px 20px; background:#ebe8df; border-radius:4px }
+article.page summary { cursor:pointer; font-weight:600; color:#25251f }
+article.page a { color:#6c785b; text-underline-offset:3px }
+article.page .page-description, article.page table.properties { display:none }
+@media(max-width:600px) { article.page { padding:0 20px 36px } article.page .page-cover-image { width:calc(100% + 40px); margin-inline:-20px } article.page .page-body { font-size:14px } article.page p, article.page li { font-size:14px } }
+</style><style>
+article.page .page-body h1, article.page .page-body h2, article.page .page-body h3 { clear:both; margin:clamp(34px,5vw,58px) 0 15px; padding:14px 0 0 17px; border-top:1px solid #d9d5ca; border-left:2px solid #eb714d; }
+article.page .page-body h1:first-child, article.page .page-body h2:first-child, article.page .page-body h3:first-child { margin-top:12px; }
+article.page .page-body h4 { margin:26px 0 11px; color:#6c785b; font:500 18px/1.3 'DM Sans',Arial,sans-serif; letter-spacing:-.02em; }
+article.page .page-body p { max-width:760px; margin:0 0 17px; }
+article.page .page-body strong { color:#25251f; font-weight:700; background:linear-gradient(transparent 68%,#eee2c8 68%); }
+article.page figure.image { overflow:hidden; margin:26px 0 34px; padding:clamp(10px,2vw,20px); background:#ebe8df; border:1px solid #e2ded3; border-radius:8px; }
+article.page figure.image img { border-radius:4px; }
+article.page .column-list { gap:clamp(16px,3vw,28px); }
+article.page .page-body ul { padding-left:25px; }
+article.page .page-body li { padding-left:3px; margin:6px 0; }
+article.page details { margin:20px 0; border:1px solid #dfdbd0; }
+article.page summary { font:600 15px/1.5 'DM Sans',Arial,sans-serif; }
+</style></head><body><article id="2fdba40e-4ec0-80eb-8ebd-fed311805b42" class="page sans" data-notion-page-icon="🎲"><header><img class="page-cover-image" src="App%20Design%20Prototype/Screenshot_2026-02-04_at_11.17.03_AM.png" style="object-position:center 43.76%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="🎲"></span></div><h1 class="page-title" dir="auto">App Design Prototype  </h1><p class="page-description" dir="auto"></p><table class="properties"><tbody></tbody></table></header><div class="page-body"><figure id="2fdba40e-4ec0-804e-a361-d8f2cdad8e87" dir="ltr"><div class="source">https://www.figma.com/proto/qOY2Vx6moi70JemKyNvkhl/Roots-and-riddles?node-id=1-2&amp;starting-point-node-id=21%3A2&amp;t=FKhY8gHxKfJbK4nq-1</div></figure><h2 id="2fdba40e-4ec0-8036-8c5c-f9a52f2a09fa" class="" dir="auto">Roots and Riddles</h2><p id="2fdba40e-4ec0-804f-b0f8-eec7636f88ec" class="" dir="auto">Our project, Roots and Riddles, aims to <strong>bridge the generation gap</strong> through a universal bonding activity, games! Our app allows users to play, and make their own games relating to the slang of their specific generation. Based on our analysis, many people feel disconnected in this specific area, and this app aims to rectify that. Users can connect with friends and family, and play each other&#x27;s games, allowing them to connect through shared language understanding and humor. The user can navigate to 3 different games: crossword puzzles, trivia, and real or fake memes. As a society, we tend to bond more with our specific age group because of shared culture, such as slang and humor. Many people wish to gain connections with people outside of their generation, and by understanding these things, they can definitely make a step in that direction. Our prototype is made to be accessible, fun, and interactive!</p><h2 id="2fdba40e-4ec0-80eb-a633-db84138084d5" class="" dir="auto">Interviews and Data Collection </h2><p id="2fdba40e-4ec0-8003-bfc1-c789bf6dbce6" class="" dir="auto"> Interview form link: <a href="https://forms.gle/PEQD6Wtp7e7kUjjG6">https://forms.gle/PEQD6Wtp7e7kUjjG6</a></p><p id="2fdba40e-4ec0-8007-9543-d617cda64aac" class="" dir="auto">Responses: <a href="https://docs.google.com/spreadsheets/d/1TRIolgall-A7ViXnIzxTEcu9SXQbHG79URBzjECcLHw/edit?usp=sharing">Bridging Generational Gap (Responses)</a></p><h3 id="2feba40e-4ec0-80d0-830c-cd26ad2bce1a" class="" dir="auto">Brainstorming</h3><div id="2feba40e-4ec0-8030-86f6-fda518ebfc2e" class="column-list" data-notion-column-list="" dir="auto"><div id="2feba40e-4ec0-80e5-880d-eabe2d61b4a4" style="width:25%" class="column" data-notion-column-ratio="0.25" dir="auto"><figure id="2feba40e-4ec0-802a-86a9-f5876ba18fce" class="image" data-notion-image="App%20Design%20Prototype/rn_image_picker_lib_temp_66f34872-7fc7-4722-a5ed-8e9436a2f2e6.jpeg" dir="ltr"><a href="App%20Design%20Prototype/rn_image_picker_lib_temp_66f34872-7fc7-4722-a5ed-8e9436a2f2e6.jpeg"><img style="width:710px" src="App%20Design%20Prototype/rn_image_picker_lib_temp_66f34872-7fc7-4722-a5ed-8e9436a2f2e6.jpeg"/></a></figure></div><div id="2feba40e-4ec0-805e-8b4a-c73c8fcf5bf9" style="width:25%" class="column" data-notion-column-ratio="0.25" dir="auto"><figure id="2feba40e-4ec0-8042-bcbc-c95ba5a22030" class="image" data-notion-image="App%20Design%20Prototype/rn_image_picker_lib_temp_09b15729-88dc-4bb8-9667-febf218c1133.jpeg" dir="ltr"><a href="App%20Design%20Prototype/rn_image_picker_lib_temp_09b15729-88dc-4bb8-9667-febf218c1133.jpeg"><img style="width:710px" src="App%20Design%20Prototype/rn_image_picker_lib_temp_09b15729-88dc-4bb8-9667-febf218c1133.jpeg"/></a></figure></div><div id="2feba40e-4ec0-80a9-8e21-fdee6370fd82" style="width:25%" class="column" data-notion-column-ratio="0.25" dir="auto"><figure id="2feba40e-4ec0-809c-a8fe-ee593fdf1ad5" class="image" data-notion-image="App%20Design%20Prototype/rn_image_picker_lib_temp_217f18db-7ffc-4d70-b910-0057997af7e3.jpeg" dir="ltr"><a href="App%20Design%20Prototype/rn_image_picker_lib_temp_217f18db-7ffc-4d70-b910-0057997af7e3.jpeg"><img style="width:710px" src="App%20Design%20Prototype/rn_image_picker_lib_temp_217f18db-7ffc-4d70-b910-0057997af7e3.jpeg"/></a></figure></div><div id="2feba40e-4ec0-8015-822f-e788278b0e8b" style="width:25%" class="column" data-notion-column-ratio="0.25" dir="auto"><figure id="2feba40e-4ec0-8005-88b3-e68f11f6541f" class="image" data-notion-image="App%20Design%20Prototype/rn_image_picker_lib_temp_5f6b2470-55f7-4a02-9084-acf336042bdd.jpeg" dir="ltr"><a href="App%20Design%20Prototype/rn_image_picker_lib_temp_5f6b2470-55f7-4a02-9084-acf336042bdd.jpeg"><img style="width:710px" src="App%20Design%20Prototype/rn_image_picker_lib_temp_5f6b2470-55f7-4a02-9084-acf336042bdd.jpeg"/></a></figure></div></div><h3 id="2fdba40e-4ec0-806c-a168-c42df36c3ec1" class="" dir="auto">Research process and findings</h3><p id="2fdba40e-4ec0-80b2-8b56-f6b98a3fa1d3" class="" dir="auto">We created a survey and asked people of different ages to complete it. Our respondents were 39.1% gen z, 34.8% gen x, and 26.1% boomers. We found that most respondents spend more time with people in their own age group (43.5%) or with friends and family members older than them (30.4%), but that they recently have had a meaningful interaction with people from a different age group (65.2%) and that most people would like to spend more time with people from a generation (47.9% agree, 39.1% slightly agree). Additionally, we found that 39.1% of respondents feel slightly misunderstood by other generations, while 30.4% responded that they slightly disagreed with this statement. This could suggest that people don’t feel strongly about how they are perceived by other generations, but that people could find value in spending more time with people outside of their age group. Nonetheless, they might need motivation to get themselves out of their social bubble.</p><p id="2fdba40e-4ec0-80ce-8b7c-dab9af7a4687" class="" dir="auto">When asked about what they would like to learn about older generations, younger generations expressed interest in better understanding the older generation’s traditions, while older generations would like to understand younger people’s slang and humor. Moreover, we found that responders appreciate the wisdom and relationships from the older and younger generations, respectively.</p><p id="2fdba40e-4ec0-8054-acf3-d3143b6473f1" class="" dir="auto">People responded that food (cooking and going out) was their preferred way to bond with their friends and family, followed by outdoor activities, movies and TV shows, and games.</p><p id="2fdba40e-4ec0-809e-b26b-d18defe02636" class="" dir="auto">When asked about what people would like to share with older or younger generations than themselves, most people responded that they would like to travel or share travel experiences. And when asked about a moment when they found pop culture surprising or confusing, they responded with slang, language, humor, jokes, and memes.</p><h3 id="2fdba40e-4ec0-80ad-86d9-c7c0f922d2e4" class="" dir="auto">Most important design decisions</h3><p id="2fdba40e-4ec0-8024-a229-c694e3247cff" class="" dir="auto">Our focus for this specific prototype was to highlight <strong>accessibility features</strong>, and make the design affordable to any user, with any level of technological experience. Particularly, the older generations have less experience with complicated app designs, so they would not be likely to use the app if they saw it as confusing, or if it had low learnability. To do so, we utilized <strong>clear, discoverable clickable frames</strong> that lead to the other pages, with the ability to move back and forth easily and understandably. We decided that a clear theme was important to keep the users engaged and also draw attention to the elements that we wanted to highlight. To be more specific, we were attracted to the idea of a clearly laid out wall design, using interactive picture frames and icons hanging from a string on the ceiling, similar to a string of fairy lights. </p><div id="2feba40e-4ec0-80ae-b105-d59a861cee8c" class="column-list" data-notion-column-list="" dir="auto"><div id="2feba40e-4ec0-80f8-a046-f142afa1a0e3" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="2feba40e-4ec0-8091-a8cb-eeae20348b0f" class="image" data-notion-image="App%20Design%20Prototype/9e1facfc-5076-4a51-acfa-324511fff775.png" dir="ltr"><a href="App%20Design%20Prototype/9e1facfc-5076-4a51-acfa-324511fff775.png"><img style="width:155.35911602209944px" src="App%20Design%20Prototype/9e1facfc-5076-4a51-acfa-324511fff775.png"/></a></figure></div><div id="2feba40e-4ec0-8093-8d75-c3f0638b3704" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="2feba40e-4ec0-80f7-af9a-e944ed86999a" class="image" data-notion-image="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.19.52_PM.png" dir="ltr"><a href="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.19.52_PM.png"><img style="width:332px" src="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.19.52_PM.png"/></a></figure><h3 id="2feba40e-4ec0-8036-ab7f-dc0566688b89" class="" dir="auto">Profile Page </h3></div></div><p id="2feba40e-4ec0-803e-ad5a-d784b32e00e6" class="" dir="auto">This helps the user clearly understand how to navigate between the different interfaces and also return back to the home page with no confusion. Bringing it back to the accessibility elements, we wanted to add an information/ question and answer section if the user needs any additional assistance, however that should not be necessary. If needed, the help button allows the user to directly interact with an AI chatbot to answer any questions. Another feature that allows the user to track their progress, standing, and overall analytics is in the profile icon featured at the top of the home page, taking them to the other interface. This decision is important because it will incentivize the user to do well and play more, to grow on the leaderboard and pass their friends, as well as understand how they are doing and their overall progress. The string of icons at the top of the home page remains consistent as you travel throughout the app, to ensure that you can navigate back, home, or wherever you need to be in an easy and fast manner. This provides the user with consistency, allowing them to feel comfortable and to increase the app&#x27;s learnability. </p><div id="2feba40e-4ec0-8019-845a-e3912e183893" class="column-list" data-notion-column-list="" dir="auto"><div id="2feba40e-4ec0-80cf-b7f5-c7718fb7a285" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="2feba40e-4ec0-809f-be2b-dc4366a278f9" class="image" data-notion-image="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.21.35_PM.png" dir="ltr"><a href="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.21.35_PM.png"><img style="width:710px" src="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.21.35_PM.png"/></a></figure></div><div id="2feba40e-4ec0-80f0-8cb4-cce9aada4db0" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="2feba40e-4ec0-80fb-b9d3-c3ec5f43c1e1" class="image" data-notion-image="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.22.07_PM.png" dir="ltr"><a href="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.22.07_PM.png"><img style="width:332px" src="App%20Design%20Prototype/Screenshot_2026-02-04_at_7.22.07_PM.png"/></a></figure></div></div><p id="2feba40e-4ec0-8020-b3af-fa6dac6c6ddf" class="" dir="auto"><em><strong>Make your own crossword page along with a completed game</strong></em> </p><p id="2feba40e-4ec0-80fd-8bdc-cb683cb2409f" class="" dir="auto">We also wanted the user to feel that they have contributions to make, because they do, and we wanted to highlight that. To do so, we included the option for them to make and utilize their own games, with their own slang, so that they can share these with the world and their own friends on the app. This also does a great job improving the app&#x27;s overall information status as it is getting real time feedback and outside knowledge from its users. Lastly, our design decision that brings the app to a full circle is the ability to connect with friends and family of any generation, doing something that any age group is able to enjoy and learn from. Users can friend directly in the app without needing to utilize other platforms and further complicating usage. With these abilities, the large generation gap can hopefully be brought closer, as this design is specifically manufactured to include features that ANYONE can use!</p><h3 id="2feba40e-4ec0-80c2-bb09-eae215ed382f" class="" dir="auto">Video Analysis of Prototype </h3><p id="2feba40e-4ec0-80e5-bddc-c82d764e4c3d" class="" dir="auto"><a href="https://youtu.be/7oy6b2dMhro">https://youtu.be/7oy6b2dMhro</a> </p><h2>Prototype walkthrough</h2><figure class="video-embed"><video controls playsinline preload="metadata" aria-label="Roots and Riddles prototype walkthrough"><source src="App%20Design%20Prototype/prototype-walkthrough.mp4" type="video/mp4">Your browser does not support embedded video.</video><figcaption>Watch the prototype in motion</figcaption></figure></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><style>
+article.page figure.video-embed { position:relative; z-index:0; isolation:isolate; margin:24px 0 38px; padding:0; overflow:visible; border:0; border-radius:10px; background:transparent; box-shadow:0 15px 40px rgba(37,37,31,.08); transition:transform .28s ease, box-shadow .28s ease; }
+article.page figure.video-embed::before { content:""; position:absolute; z-index:-1; inset:-20px; border-radius:24px; background:rgba(245,242,235,.28); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); opacity:0; transition:opacity .28s ease; pointer-events:none; }
+article.page figure.video-embed:hover, article.page figure.video-embed:focus-within { z-index:2; transform:translateY(-2px) scale(1.008); box-shadow:0 28px 70px rgba(37,37,31,.2); }
+article.page figure.video-embed:hover::before, article.page figure.video-embed:focus-within::before { opacity:1; }
+article.page figure.video-embed video { position:relative; z-index:1; display:block; width:100%; height:auto; max-height:78vh; border:1px solid #d9d5ca; border-radius:10px; background:#111; object-fit:contain; }
+article.page figure.video-embed figcaption { position:relative; z-index:1; padding:13px 18px; text-align:right; font:9px 'DM Mono',monospace; letter-spacing:.08em; color:#5d594f; }
+@media (prefers-reduced-motion: reduce) { article.page figure.video-embed, article.page figure.video-embed::before { transition:none; } article.page figure.video-embed:hover, article.page figure.video-embed:focus-within { transform:none; } }
+</style><script>
+(() => {
+  const figure = document.querySelector('.video-embed');
+  const video = figure?.querySelector('video');
+  if (!figure || !video) return;
+  let hoverPreview = false;
+  const startPreview = () => {
+    video.muted = true;
+    hoverPreview = true;
+    const playback = video.play();
+    if (playback) playback.catch(() => { hoverPreview = false; });
+  };
+  const stopPreview = () => {
+    if (!hoverPreview) return;
+    video.pause();
+    try { video.currentTime = 0; } catch {}
+    hoverPreview = false;
+  };
+  figure.addEventListener('pointerenter', startPreview);
+  figure.addEventListener('pointerleave', stopPreview);
+  figure.addEventListener('focusin', startPreview);
+  figure.addEventListener('focusout', event => {
+    if (!figure.contains(event.relatedTarget)) stopPreview();
+  });
+})();
+</script></body></html>

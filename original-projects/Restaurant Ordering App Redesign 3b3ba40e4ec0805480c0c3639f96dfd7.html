@@ -1,0 +1,871 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Restaurant Ordering App Redesign </title><meta name="data-notion-page-icon" content="🥕"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%A5%95%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+
+article.page figure.video-embed { position:relative; z-index:0; isolation:isolate; margin:24px 0 38px; padding:0; overflow:visible; border:0; border-radius:10px; background:transparent; box-shadow:0 15px 40px rgba(37,37,31,.08); transition:transform .28s ease, box-shadow .28s ease; }
+article.page figure.video-embed::before { content:""; position:absolute; z-index:-1; inset:-20px; border-radius:24px; background:rgba(245,242,235,.28); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); opacity:0; transition:opacity .28s ease; pointer-events:none; }
+article.page figure.video-embed:hover, article.page figure.video-embed:focus-within { z-index:2; transform:translateY(-2px) scale(1.008); box-shadow:0 28px 70px rgba(37,37,31,.2); }
+article.page figure.video-embed:hover::before, article.page figure.video-embed:focus-within::before { opacity:1; }
+article.page figure.video-embed video { position:relative; z-index:1; display:block; width:100%; height:auto; max-height:78vh; border:1px solid #d9d5ca; border-radius:10px; background:#111; object-fit:contain; }
+article.page figure.video-embed figcaption { position:relative; z-index:1; padding:13px 18px; text-align:right; font:9px 'DM Mono',monospace; letter-spacing:.08em; color:#5d594f; }
+@media (prefers-reduced-motion: reduce) { article.page figure.video-embed, article.page figure.video-embed::before { transition:none; } article.page figure.video-embed:hover, article.page figure.video-embed:focus-within { transform:none; } }
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"><style>
+html { scroll-behavior:smooth; background:#f5f2eb }
+body { margin:0; padding:0 0 48px; background:#f5f2eb; color:#25251f; font-family:'DM Sans',Arial,sans-serif; -webkit-font-smoothing:antialiased }
+article.page { width:min(880px,100%); margin:0 auto; padding:0 34px 48px; box-shadow:none }
+article.page header { padding:0 0 28px; border-bottom:1px solid #d9d5ca }
+article.page .page-cover-image { position:relative; width:calc(100% + 68px); height:clamp(210px,34vw,340px); max-width:none; margin:0 -34px 28px; object-fit:cover; border-radius:0 }
+article.page .page-header-icon { display:none }
+article.page .page-title { margin:0; font:500 clamp(34px,6vw,56px)/1.05 'Playfair Display',Georgia,serif; letter-spacing:-.045em; color:#25251f }
+article.page .page-body { padding-top:18px; font-size:15px; line-height:1.8; color:#4f5048 }
+article.page h1, article.page h2, article.page h3 { margin:34px 0 12px; padding:0; background:none!important; color:#25251f!important; font:500 clamp(22px,3vw,30px)/1.16 'Playfair Display',Georgia,serif; letter-spacing:-.025em }
+article.page h1:first-child, article.page h2:first-child, article.page h3:first-child { margin-top:12px }
+article.page p, article.page li { font:400 15px/1.8 'DM Sans',Arial,sans-serif; color:#55564e }
+article.page hr { margin:28px 0; border:0; border-top:1px solid #d9d5ca }
+article.page figure.image { margin:22px 0 28px; text-align:center }
+article.page figure.image img { display:block; width:auto!important; max-width:100%; max-height:none; height:auto; margin:0 auto; border-radius:5px }
+article.page .column-list { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap }
+article.page .column { min-width:min(260px,100%); flex:1 1 280px }
+article.page details { margin:15px 0; padding:16px 20px; background:#ebe8df; border-radius:4px }
+article.page summary { cursor:pointer; font-weight:600; color:#25251f }
+article.page a { color:#6c785b; text-underline-offset:3px }
+article.page .page-description, article.page table.properties { display:none }
+@media(max-width:600px) { article.page { padding:0 20px 36px } article.page .page-cover-image { width:calc(100% + 40px); margin-inline:-20px } article.page .page-body { font-size:14px } article.page p, article.page li { font-size:14px } }
+</style><style>
+article.page .page-body h1, article.page .page-body h2, article.page .page-body h3 { clear:both; margin:clamp(34px,5vw,58px) 0 15px; padding:14px 0 0 17px; border-top:1px solid #d9d5ca; border-left:2px solid #eb714d; }
+article.page .page-body h1:first-child, article.page .page-body h2:first-child, article.page .page-body h3:first-child { margin-top:12px; }
+article.page .page-body h4 { margin:26px 0 11px; color:#6c785b; font:500 18px/1.3 'DM Sans',Arial,sans-serif; letter-spacing:-.02em; }
+article.page .page-body p { max-width:760px; margin:0 0 17px; }
+article.page .page-body strong { color:#25251f; font-weight:700; background:linear-gradient(transparent 68%,#eee2c8 68%); }
+article.page figure.image { overflow:hidden; margin:26px 0 34px; padding:clamp(10px,2vw,20px); background:#ebe8df; border:1px solid #e2ded3; border-radius:8px; }
+article.page figure.image img { border-radius:4px; }
+article.page .column-list { gap:clamp(16px,3vw,28px); }
+article.page .page-body ul { padding-left:25px; }
+article.page .page-body li { padding-left:3px; margin:6px 0; }
+article.page details { margin:20px 0; border:1px solid #dfdbd0; }
+article.page summary { font:600 15px/1.5 'DM Sans',Arial,sans-serif; }
+</style><style>
+article.page figure.prototype-embed { margin:24px 0 38px; padding:0; overflow:hidden; border:1px solid #d9d5ca; border-radius:8px; background:#fff; box-shadow:0 15px 40px rgba(37,37,31,.08); }
+article.page figure.prototype-embed iframe { display:block; width:100%; height:clamp(440px,64vw,720px); border:0; background:#f5f2eb; }
+article.page figure.prototype-embed figcaption { padding:13px 18px; text-align:right; font:9px 'DM Mono',monospace; letter-spacing:.08em; }
+</style></head><body><article id="3b3ba40e-4ec0-8054-80c0-c3639f96dfd7" class="page sans" data-notion-page-icon="🥕"><header><img class="page-cover-image" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.53.42_AM.png" style="object-position:center 100%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="🥕"></span></div><h1 class="page-title" dir="auto">Restaurant Ordering App Redesign </h1><p class="page-description" dir="auto"></p><table class="properties"><tbody></tbody></table></header><div class="page-body"><hr id="3b3ba40e-4ec0-8028-baa2-f7516b25c48f" dir="auto"/><h3 id="3e4ba40e-4ec0-80ad-8f73-d76512081909" class="" dir="auto">Design Challenge Description </h3><figure id="3b3ba40e-4ec0-805b-82cf-f34220494ed8" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.26.56_AM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.26.56_AM.png"><img style="width:704px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.26.56_AM.png"/></a></figure><p id="3e4ba40e-4ec0-80e2-857e-d172a8fa2ba8" class="" dir="auto">The design challenge pursued in this project was to create a high fidelity mockup of a mobile app for Val&#x27;s Vegan Kitchen that had complimentary affordances for <strong>two kinds of users</strong>: customers and employees. Through the app, customers would be able to view the menu and information about the restaurant, place orders, earn rewards, and interact with other customers through a leaderboard. Employees would be able to make stock adjustments, look over sales, and update the app&#x27;s Ul in order to reflect the current state of the restaurant.</p><h3 id="3e4ba40e-4ec0-8025-91ca-e7fe66b2f6c5" class="" dir="auto">First step: Competitive Analysis </h3><figure id="3e4ba40e-4ec0-8076-91df-f147c08e7215" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_1.58.24_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_1.58.24_PM.png"><img style="width:2158px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_1.58.24_PM.png"/></a></figure><p id="3e4ba40e-4ec0-80b3-8631-ed52f7af1924" class="" dir="auto">Above, we ranked some competitors based on the standards listed in each column.<br/>Below, we created our own evaluation of the original Val&#x27;s Vegan Kitchen application based off the same standards, with the intention of focusing on areas with discrepancies. </p><figure id="3e4ba40e-4ec0-8032-8abc-ca66f7e6cdbc" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_2.06.05_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_2.06.05_PM.png"><img style="width:2548px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_2.06.05_PM.png"/></a></figure><h3 id="3b3ba40e-4ec0-802a-b774-d0d826a32eb7" class="" dir="auto">Initial Low Fidelity Prototype </h3><p id="3b3ba40e-4ec0-80ab-87a1-dce1815b98f8" class="" dir="auto">These sketches feature the design elements of the final from the client and customers end before it was rendered as a high fidelity prototype.  </p><ul id="3e4ba40e-4ec0-8012-85aa-c5743cdaa810" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Employee End: Focused on modeling the Dashboard, featuring clickable options based on hierarchy of importance. This design also highlights the sales and inventory pages and its many features that improve efficiency for employees. </li></ul><figure id="3b3ba40e-4ec0-80f7-983e-ef9caa884af5" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.37.51_AM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.37.51_AM.png"><img style="width:692px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.37.51_AM.png"/></a></figure><ul id="3e4ba40e-4ec0-80da-b448-f5ffba1cc494" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Customer End: This prototype is focused on improving the customer experience by allowing them to choose their food items to see the details and add to their cart, as well as the option to make a combo.</li></ul><figure id="3b3ba40e-4ec0-8074-bdba-f64d8e40ebb1" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.38.22_AM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.38.22_AM.png"><img style="width:692px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-08-05_at_12.38.22_AM.png"/></a></figure><h3 id="3e4ba40e-4ec0-8050-90c3-d02bd55523cb" class="" dir="auto">User testing and Significant Results  </h3><figure id="3e4ba40e-4ec0-8093-84b5-f6f7fd6d92b0" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.16.48_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.16.48_PM.png"><img style="width:703.984375px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.16.48_PM.png"/></a></figure><p id="3e4ba40e-4ec0-807b-acd4-f6610ae3936f" class="" dir="auto">The user testing plan involves asking the following questions in order to gauge where they<br/>fall on a usability metric.</p><ol type="1" id="3e4ba40e-4ec0-80fb-8c94-d9c8afe71bda" class="numbered-list" start="1" dir="auto"><li>Have you ever eaten at Val’s Vegan Kitchen?</li></ol><ol type="1" id="3e4ba40e-4ec0-80b3-a2a6-c216078c8e3f" class="numbered-list" start="2" dir="auto"><li>On a scale of 1-10, how familiar are you with food delivery apps?</li></ol><ol type="1" id="3e4ba40e-4ec0-8000-9838-e3f27f4c1b04" class="numbered-list" start="3" dir="auto"><li>Are there any obstacles that prevent you from ordering food online?</li></ol><p id="3e4ba40e-4ec0-80fd-9f0e-c1fbf5cc636e" class="" dir="auto">Using open ended questions and allowing the user to follow along with the ordering experience to elaborate on any possible obstacles ensures that all the data is unbiased and clear. This also allows for the team member performing the task to take detailed notes of the different scenarios to then analyze.</p><details id="3e4ba40e-4ec0-807b-bcf1-ced982ea1ac9" open="" class="toggle" dir="auto"><summary>Issues reported </summary><div class="indented"><p id="3e4ba40e-4ec0-802c-a038-c3083fb819a9" class="" dir="auto">1: <strong>Customer Ordering Experience:</strong> User testing revealed several issues within the customer ordering workflow. Both new and returning customers experienced confusion when attempting to customize and place their orders. Participants noted that the combo feature was not consistently available across screens, making it difficult to upgrade items into a combo meal at different points in the ordering process. Additionally, dietary information was not clearly visible while browsing the menu, requiring users to open individual items to determine whether they met their dietary needs. Users also reported uncertainty when selecting between pickup and delivery because the delivery option appeared to be the default choice. This redesign component was selected because these issues directly affected the customer ordering experience and made completing orders less efficient.</p><p id="3e4ba40e-4ec0-80af-aa4c-f9de1c0ee702" class="" dir="auto">2: <strong>Client Inventory and Order Management:  </strong>User testing also identified several issues within the client side inventory and order management workflow. ‘Kitchen staff’ had difficulty finding a clear way to move inventory items between stock categories, such as from ‘In Stock &#x27;Out of Stock.’ Participants also struggled to locate the appropriate controls for updating order delays and notifying customers of changes to preparation times. In addition, users wanted clearer confirmation messages after completing actions to ensure that inventory updates and customer notifications had been successfully applied. This redesign component was selected because these issues affect critical restaurant operations and could lead to inventory inaccuracies, communication errors, and reduced efficiency for staff members.</p></div></details><p id="3e4ba40e-4ec0-808d-ade7-cde337214ac7" class="" dir="auto">2 Redesigns discussed for combo making functionality </p><details id="3e4ba40e-4ec0-8098-b6f5-f24b230870a6" open="" class="toggle" dir="auto"><summary>Option 1: Persistent Combo Functionality </summary><div class="indented"><p id="3e4ba40e-4ec0-80a5-8712-f59a8ff3e3c3" class="" dir="auto">The first redesign option focuses on improving consistency throughout the ordering<br/>process by making the &quot;Make it a Combo&quot; feature available on multiple screens. Rather than<br/>limiting this option to a single point in the workflow, users would be able to convert an item into a combo from the menu page, item detail page, cart page, and checkout page. During user testing, several participants expected the combo option to remain available as they moved through the ordering process and were frustrated when it was not accessible on certain screens. This redesign would create a faster and more flexible ordering experience by reducing the number of steps required to customize a meal. It would also be particularly beneficial for returning customers who already know what they want and prioritize speed and efficiency when placing an order.</p></div></details><figure id="3e4ba40e-4ec0-804f-b581-ec64b6997d77" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.12_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.12_PM.png"><img style="width:704px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.12_PM.png"/></a></figure><figure id="3e4ba40e-4ec0-80f9-a7e3-ca0427a1acc9" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.25_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.25_PM.png"><img style="width:703.984375px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.26.25_PM.png"/></a></figure><details id="3e4ba40e-4ec0-8054-9c1c-c15fe8744c2e" open="" class="toggle" dir="auto"><summary>Option 2: <strong>Guided Combo Builder</strong> (chosen by users)</summary><div class="indented"><p id="3e4ba40e-4ec0-8014-b3df-e71e2bf69004" class="" dir="auto">The second redesign option introduces a dedicated combo building workflow. Instead of<br/>selecting a combo through a single button, users would be guided through a step by step process in which they first choose a main item, then a side, followed by a beverage before reviewing their selections and adding the combo to their cart. This approach provides more structure and guidance throughout the ordering process. This redesign would be especially helpful for first time customers who may be unfamiliar with the menu and available combo options. The flow utilizes important selection design like radial buttons to make it clear that this is a “select one” process. The screen is chunked into main, side, and drink, which ensures that the customer is aware of all that they must select before proceeding. By walking users through each selection, the workflow reduces uncertainty and clearly communicates what is included in a combo meal. However, because it introduces additional steps, it may be less efficient for returning customers who are already familiar with the menu and wish to order quickly.</p></div></details><figure id="3e4ba40e-4ec0-80e8-b2a7-efa407bbd97b" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.33.07_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.33.07_PM.png"><img style="width:2174px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.33.07_PM.png"/></a></figure><h3 id="3e4ba40e-4ec0-8081-8cf9-ff3a4b550594" class="" dir="auto">Brief User Test on Redesign Results </h3><details id="3e4ba40e-4ec0-802a-9e1c-fe4f2e0651df" open="" class="toggle" dir="auto"><summary>How and why option B</summary><div class="indented"><p id="3e4ba40e-4ec0-80c5-94ef-e796646ed5aa" class="" dir="auto">After creating both redesign concepts, the participants were shown the redesigned<br/>workflows and asked which option would make the process of ordering a combo meal easier and more intuitive. While participants liked redesign option A, several users noted that it still relied on them noticing and understanding the combo feature on their own. In contrast, redesign option B provided a more structured and guided experience that clearly communicated how a combo meal should be built.<br/>Participants really liked the step by step workflow in option B because it removed<br/>uncertainty from the ordering process. Users felt that separating the combo into a main item, side, and beverage made it easier to understand what was included and ensured that they would not accidentally miss any part of the meal. This was particularly beneficial for first time customers who were unfamiliar with the menu and available combo options. Participants also noted that the organization of the screen made the selection process feel more intuitive and easier to follow. Although option A required fewer clicks, users felt that option B provided a clearer overall experience and better addressed the usability issues identified during testing. The guided workflow reduced confusion, improved visibility of available combo options, and created a more structured ordering process.<br/>Based on the testing results, redesign option B was selected as the final solution. The<br/>redesign was chosen because it provides better guidance throughout the ordering process while reducing uncertainty for users. By walking customers through each component of the combo meal, the workflow creates a more intuitive and user friendly experience that better supports both new and returning customers.</p></div></details><h3 id="3b3ba40e-4ec0-8013-a00f-f82cb89958aa" class="" dir="auto">Redesigns Following User Testing: Customer End</h3><h4 id="3b3ba40e-4ec0-80b4-8a94-e0b065fbacfe" class="" dir="auto"><strong>Improving the Combo Meal Ordering Experience</strong></h4><p id="3b3ba40e-4ec0-80a9-91bb-fdf5653a1c51" class="" dir="auto">User testing revealed that customers struggled to find and understand how to order a combo meal. While users could easily add individual menu items to their cart, the option to convert an item into a combo was unclear and inconsistent. New customers needed guidance on what was included in a combo, while returning customers expected a faster, more streamlined ordering process.</p><p id="3b3ba40e-4ec0-8051-8280-f57733b5cbc9" class="" dir="auto">To solve this, our team explored two redesigns: a <strong>persistent &quot;Make it a Combo&quot; button</strong> available throughout the ordering flow, and a <strong>Guided Combo Builder</strong>. We selected the Guided Combo Builder because it provided clearer guidance instead of relying on users to notice the combo option.</p><p id="3b3ba40e-4ec0-80a8-8983-e36533cbb38a" class="" dir="auto">The final design walks users through three simple steps: <strong>select a main, choose a side, and pick a drink</strong>. Using clear sections and <strong>single-selection controls</strong> makes the process easy to understand and ensures users complete their combo before adding it to their cart.</p><p id="3b3ba40e-4ec0-8016-af46-f01a8b98ee69" class="" dir="auto">This redesign improved usability by making the combo process more visible, structured, and predictable. It reduced confusion, prevented users from accidentally missing items, and created a faster, <strong>more intuitive experience</strong> for both first-time and returning customers. </p><figure id="3e4ba40e-4ec0-80d2-9db9-fd523e48d3b2" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.23_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.23_PM.png"><img style="width:2680px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.23_PM.png"/></a></figure><figure id="3e4ba40e-4ec0-806a-a7ca-f83ee3fb6cda" class="image" data-notion-image="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.55_PM.png" dir="ltr"><a href="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.55_PM.png"><img style="width:2754px" src="Restaurant%20Ordering%20App%20Redesign/Screenshot_2026-09-23_at_3.37.55_PM.png"/></a></figure><hr id="3b3ba40e-4ec0-80c6-88f7-e78e10a270e0" dir="auto"/><p id="3b3ba40e-4ec0-80e9-b9de-e38effcd6040" class="" dir="auto">
+</p><h4 id="3b3ba40e-4ec0-80da-b56e-f7d9b830dc5d" class="" dir="auto">Final Design Discussion and Presentation: Customer End   </h4><p id="3b3ba40e-4ec0-80dc-b553-fcf5d5be83ce" class="" dir="auto">The final design supports two main user groups of customers ordering food and restaurant staff managing menu operations. On the customer side the app allows users to browse menu categories, build a combo meal, add items to the cart, continue browsing, view promotions, see delivery charges, and receive suggested items that go well with their order. On the restaurant staff side, the app allows employees to view dashboard information, manage sales data, update inventory availability, adjust preparation time, pause orders, and control menu related details. Together these features make the app function as both a customer ordering system and a restaurant management tool.</p><p id="3e4ba40e-4ec0-8026-805f-d04639ff1352" class="" dir="auto">
+</p><h2>Prototype walkthrough</h2><figure class="video-embed"><video controls playsinline preload="metadata" aria-label="Restaurant ordering app prototype walkthrough"><source src="Restaurant%20Ordering%20App%20Redesign/portfolio-video-vals.mp4" type="video/mp4">Your browser does not support embedded video.</video><figcaption>Watch the prototype in motion</figcaption></figure></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><script>
+(() => {
+  const figure = document.querySelector('.video-embed');
+  const video = figure?.querySelector('video');
+  if (!figure || !video) return;
+  let hoverPreview = false;
+  const startPreview = () => {
+    video.muted = true;
+    hoverPreview = true;
+    const playback = video.play();
+    if (playback) playback.catch(() => { hoverPreview = false; });
+  };
+  const stopPreview = () => {
+    if (!hoverPreview) return;
+    video.pause();
+    video.currentTime = 0;
+    hoverPreview = false;
+  };
+  figure.addEventListener('pointerenter', startPreview);
+  figure.addEventListener('pointerleave', stopPreview);
+  figure.addEventListener('focusin', startPreview);
+  figure.addEventListener('focusout', event => {
+    if (!figure.contains(event.relatedTarget)) stopPreview();
+  });
+})();
+</script></body></html>
